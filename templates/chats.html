@@ -1,0 +1,22 @@
+
+<div class="container-fluid position-fixed bottom-0" style="z-index: 3;">
+    <input type="checkbox" id="check" />
+    <label class="chat-btn"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+        <i class="fa fa-commenting-o comment"></i> 
+    </label>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">Online Members</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>Online : </div>
+        <div id="active-users" style="background-color: greenyellow; padding: 5px; border-radius: 10px; margin: 2px 0;"></div>
+
+        <hr>
+        <div>Offline : </div>
+        <div id="inactive-users" style="background-color: aqua; padding: 5px; margin: 2px 0; border-radius: 10px;"></div>
+    </div>
+  </div

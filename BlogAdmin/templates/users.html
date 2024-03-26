@@ -1,0 +1,57 @@
+<a href="{% url 'pdf-view' %}">view pdf</a>
+<a href="{% url 'pdf-download' %}">download pdf</a>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <style>
+      table, thead, tr, td, th {
+        text-align: left;
+        padding: 5px;
+      }
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 style="text-align: center;">Blog User List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+              <tr>
+                <td>{{user.id}}</td>
+                <td>
+                  <img src="{{root}}\\{{user.profile.image.name}}" width="30" height="30" alt="">
+                </td>
+                <td>
+                  {{user.name}}
+                </td>
+                <td>
+                  {{user.username}}
+                </td>
+                <td>
+                  {{user.email}}
+                </td>
+              </tr>
+          {% endfor %}
+            
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

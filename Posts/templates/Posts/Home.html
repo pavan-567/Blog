@@ -1,0 +1,375 @@
+{% extends "base.html" %} 
+{% block content %}
+{% load static %}
+{% load widget_tweaks %}
+
+<div class="container">  
+  {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end">
+      <div>
+        <button data-bs-toggle="modal" data-bs-target="#create-post" class="btn btn-warning">Create Post</button>
+        <button data-bs-toggle="modal" data-bs-target="#create-category" class="btn btn-warning">Create Category</button>
+        <!-- Modal -->
+        <div class="modal fade" id="create-post" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="create-post">Create Post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <form action="{% url 'create-post' %}" class="content-form" method="post" enctype="multipart/form-data" novalidate>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-floating mt-3">
+                      <input
+                        type="text"
+                        name="title"
+                        class="form-control"
+                        id="title"
+                        placeholder="Place title"
+                        required
+                      />
+                      <label for="password" class="form-label">Title</label>
+                    </div>
+                    <div class="form-floating mt-3">
+                      <textarea
+                        style="height: 100px;"
+                        type="text"
+                        name="content"
+                        class="form-control"
+                        id="content"
+                        placeholder="place content"
+                        required
+                      ></textarea>
+                      <label for="password" class="form-label">Content</label>
+                    </div>
+                    <!-- Image -->
+                    <div class="mt-3">
+                      {{form.image.label_tag}}
+                      {% render_field form.image class="form-control mt-3" %}
+                    </div>
+                    <!-- Category -->
+                    <div class="mt-3">
+                      {{form.category.label_tag}}
+                      {% render_field form.category class="form-select form-select-sm mt-3" %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-warning">Submit</button>
+                </div>
+              </form>  
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Modal -->
+<!-- Modal -->
+<div class="modal fade" id="create-category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="create-category">Create Category</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'category-create' %}" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mt-2">
+            {{c_form.name.label_tag}}
+            {% render_field c_form.name class="form-control mt-2" placeholder="Enter category name" %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+  {% endif %}
+    
+  {% for post in posts %}  
+      
+    <div class="row g-4 mt-2">
+        <!-- Content -->
+        <div class="card shadow text-white position-relative" style="background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{post.image.url}}') no-repeat ; background-position: center; background-size: cover; height: 500px;">
+          <div class="card-body d-flex flex-column justify-content-end">
+            <h2 class="card-title">{{post.title}}</h2>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'detail-post' post.id %}" class="btn btn-warning">More Info</a>
+                <div class="fs-4"><span class="badge p-2 bg-warning text-black">{{post.comment_set.all.count}} Comments</span></div>
+              <h3 class="position-absolute end-0 top-0 me-2 mt-2"><span class="badge rounded-pill bg-warning text-black">{{post.category}}</span></h3>
+              <div class="position-absolute top-0 me-2 mt-2 d-flex align-items-between justify-content-center p-2">
+                <div class="position-relative">
+                  <img src="{{post.author.profile.image.url}}" width="70" height="70" class="me-2 object-fit-cover rounded-circle" alt="">
+
+                  <div class="position-absolute online-home-container" style="bottom: 10px; right: 10px;">
+                    <input type="hidden" value="{{post.author.username}}" />
+                    {% if post.author.profile.status %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color:greenyellow;" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>
+                      {% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>
+                    {% endif %}
+                  </div>
+                </div>
+                <div>
+                  <h3>
+                    <a href="{% url 'profile' post.author.profile.id %}" class="text-decoration-none text-white cursor-pointer home__username">
+                      {{post.author.username|capfirst}}</a>
+                  </h3>
+                  <p>
+                    {{post.date_created|timesince}} ago
+                  </p>
+                </div>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  <!-- Pagination -->
+  <nav aria-label="Page navigation example" class="mt-3">
+    <ul class="pagination justify-content-center">
+      
+      {% if posts.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{posts.previous_page_number}}">Previous</a>
+        </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&laquo; First</a>
+      </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#">Previous</a>
+      </li>
+      {% endif %}
+<!--         
+      <li class="page-item disabled">
+        <a class="page-link">Previous</a>
+      </li> -->
+      
+      
+      {% for page in page_loops %}
+         <li class="page-item {% if posts.number == forloop.counter %} active {% endif %}"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+      {% endfor %}
+        
+        
+      <!-- <li class="page-item active"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+      
+      {% if posts.has_next %}
+        
+        <li class="page-item">
+          <a class="page-link" href="?page={{posts.next_page_number}}">Next</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{posts.paginator.num_pages}}">&raquo; Last</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">Next</a>
+        </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&raquo; Last</a>
+        </li>
+      {% endif %}
+        
+    </ul>
+  </nav>
+</div>
+{% endblock %}
+
+
+{% block script %}
+{{request.user.username|json_script:"present_home_user"}}
+<script>
+   const form = document.querySelector(".content-form");
+   const presentHomeUser = document.getElementById('present_home_user').textContent;
+
+   if(presentHomeUser.trim() === "\"\"") {
+      throw new Error('User Haven\'t Logged In!')
+   }
+
+   
+    form.addEventListener("submit", function (e) {
+      console.log("SUBMITTED!")
+      if (!form.checkValidity()) {
+        e.preventDefault();
+      }
+
+      form.classList.add("was-validated");
+    });
+</script>
+  
+{% endblock %}
+  
+
+
+
+
+
+{% comment %}
+  
+
+<div class="relative flex flex-col justify-between w-full object-cover object-left-top min-h-screen bg-[url({% static 'images/Posts/home_create.jpg' %})] bg-cover object-cover">
+  <div class="absolute top-0 w-full h-full backdrop-blur-lg"></div>
+  <div class="grid lg:grid-cols-[1fr_2fr_1fr] grid-cols-[1fr_3fr] gap-10 h-full me-3 lg:me-0">
+    <div class="">
+      <!-- Content Column -->
+      <div
+      class="flex flex-col mx-4 pb-3 mt-10 relative shadow-2xl shadow-black rounded-lg py-3 bg-white/[0.7]"
+      >
+      <!-- <div
+        class="flex flex-col mx-4 pb-3 mt-10 relative border border-gray-400 bg-gray-300 shadow-lg shadow-black"
+        > -->
+        <div class="text-4xl text-center my-4 font-semibold">
+          Categories List
+        </div>
+        <hr class="border border-black my-3">
+        <div class="content">
+          <ul class="space-y-5 text-2xl mt-3">
+            <li {% if current_category == '' %} class="flex justify-between items-center mx-10 bg-white p-2 shadow-sm shadow-black rounded-lg transition ease-linear delay-[50ms]" {% else %} class="flex justify-between items-center mx-10 hover:bg-white p-2 shadow-sm shadow-black rounded-lg transition ease-linear delay-[50ms]" {% endif %}>
+              <a href="{% url 'home' %}" class="hover:text-blue-500 transition ease-linear delay-[50ms]">All</a>
+              <p {% if current_category == '' %} class="font-bold text-orange-500" style="text-shadow: 3px 4px 7px rgba(81,67,21,0.8);" {% else %} class="font-bold" {% endif %}>{{total_posts}}</p>
+            </li>
+            {% for category in categories %}
+            <li {% if current_category == category.name %} class="flex justify-between items-center mx-10 bg-white p-2 shadow-sm shadow-black rounded-lg transition ease-linear delay-[50ms]" {% else %} class="flex justify-between items-center mx-10 hover:bg-white p-2 shadow-sm shadow-black rounded-lg transition ease-linear delay-[50ms]" {% endif %}>
+              <a href="{% url 'home' %}?q={{category.name}}" class="hover:text-blue-500 transition ease-linear delay-[50ms]">{{category}}</a>
+              <p {% if current_category == category.name %} class="font-bold text-orange-500" style="text-shadow: 3px 4px 7px rgba(81,67,21,0.8);" {% else %} class="font-bold" {% endif %}>{{category.post_set.all.count}}</p>
+            </li>
+            
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Column -->
+    <div class="z-20">
+      <div class="my-5 shadow-2xl shadow-black rounded-lg p-3 bg-white/[0.8]">
+      <!-- <div class="my-5 bg-gray-200 shadow-md shadow-black p-3 border border-x-black border-t-gray-500"> -->
+        <div class="flex justify-between my-3 mx-10">
+          <div class="posts">
+            <h1 class="text-5xl">Posts</h1>
+            <p>{{count}} Posts According To Your Needs</p>
+          </div>
+          {% if user.is_authenticated %}
+          <a
+          href="{% url 'create-post' %}"
+          class="text-4xl bg-violet-700 p-4 rounded-lg text-white hover:bg-violet-600 transition linear delay-75"
+          >
+          Create Post
+        </a>
+        {% endif %}
+        </div>
+      </div>
+      <hr class="" />
+      <!-- POSTS -->
+      <div class="">
+        {% for post in posts %}
+        <div
+        class="mb-5 mt-5 shadow-2xl shadow-black rounded-lg p-8 bg-white/[0.5]"
+        >
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <!-- Image -->
+            <div
+            class="w-[50px] h-[50px] overflow-hidden border-2 rounded-full border-blue-400 relative"
+            >
+            <img
+            src="{{post.author.profile.image.url}}"
+            width="50"
+            height="50"
+            alt=""
+            class="w-full h-full object-cover"
+            />
+          </div>
+          
+          <!-- Username -->
+          <div class="text-2xl">
+                <a href="{% url 'profile' post.author.profile.id %}" class="cursor-pointer hover:text-blue-700 transition ease-linear delay-[25ms]">
+                  {{post.author.name|capfirst}}  <span class="font-bold text-orange-600 inline-block" style="text-shadow: 3px 4px 7px rgba(81,67,21,0.8);">@{{post.author.username}}</span>
+                </a>
+              </div>
+            </div>
+            <div>{{post.date_created|timesince}} ago</div>
+          </div>
+          <!-- Title -->
+          <div class="my-3 mb-5 flex flex-col justify-between h-full">
+            <p class="text-3xl mx-2 my-2">
+              <a
+              href="{% url 'detail-post' post.id %}"
+              class="hover:text-blue-500 transition ease-linear delay-75"
+              data-te-toggle="tooltip"
+              title="Click Here For More Details!"
+              >{{post.title}}
+            </a>
+          </p>
+        </div>
+          <!--  -->
+          <hr class="" />
+          <!-- Total Comments and Category -->
+          <div class="flex mt-5 justify-between text-2xl">
+            <div class="py-2 px-3">
+              {{post.comment_set.all.count}} Comments
+            </div>
+            <div class="bg-violet-700 text-white rounded-full py-2 px-3">
+              {{post.category.name}}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- Column -->
+    <div class="z-30 hidden lg:block">
+      <div
+        class="info-handler mx-4 pb-3 mt-10 shadow-2xl shadow-black rounded-lg py-3 bg-white/[0.7]"
+      >
+      <!-- <div
+        class="info-handler mx-4 pb-3 mt-10 shadow-lg border border-gray-400 shadow-black bg-gray-300"
+        > -->
+        <div class="text-4xl text-center mt-4 mb-2 font-semibold">
+          Top Posts
+        </div>
+        <hr class="border border-black my-5" />
+        {% for top_user in top_users|dictsortreversed:'count' %}
+        <div class="flex justify-between items-center m-4">
+          <!-- DictsortReversed : Sorts The Values In The Reverse Order -->
+          <!-- <p>{{top_user.user.postmodel_set.all.count}}</p> -> Another Way To Get Count -->
+          <div class="wrap-content flex items-center text-2xl gap-x-2">
+            <img
+            src="{{top_user.user.profile.image.url}}"
+            width="50"
+            height="50"
+            class="w-[50px] h-[50px] rounded-full border-2 border-blue-500 object-cover"
+            alt=""
+            />
+            <p>
+              <!-- top_user Is a User Defined Logic Dictionary Where We Store User Objects In It -->
+              <a href="{% url 'profile' top_user.user.profile.id %}" class="hover:text-blue-500 cursor-pointer transition ease-linear delay-[50ms]">{{top_user.user.username|capfirst}}</a>
+            </p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold">{{top_user.count}}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endcomment %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %} {% load widget_tweaks %}
+
+{% block content %}
+
+<div class="container">
+  <div class="card" style="width: auto;">
+    <div class="d-flex">
+      <div style="width: 40%;" class="random-img">
+        <img src="https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" style="height: 100%; width: 100%; object-fit: cover;" alt="...">
+      </div>
+      <div class="card-body flex-grow-1">
+        <h2 class="card-title text-center">User Profile</h2>
+        <div class="card-text">
+          <form action="" class="content-form" method="POST" novalidate enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mt-2">
+              {{u_form.username.label_tag}}
+              {% render_field u_form.username class="form-control" %}
+            </div>
+            <div class="mt-2">
+              {{u_form.email.label_tag}}
+              {% render_field u_form.email class="form-control" %}
+              <input type="hidden" name="email" value="{{u_form.email.value}}" />
+            </div>
+            <div class="mt-2">
+              {{p_form.image.label_tag}}<br>
+              {% render_field p_form.image class="form-control" %}
+            </div>
+            <div class="mt-2">
+              {{p_form.cover.label_tag}}<br>
+              {% render_field p_form.cover class="form-control" %}
+            </div>
+            <div class="mt-2">
+              {{p_form.bio.label_tag}}
+              {% render_field p_form.bio class="form-control" %}
+            </div>
+            <div class="mt-2">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+{% comment %}
+  
+  
+<div class="flex flex-col relative justify-between items-center min-h-screen h-auto bg-[url('https://images.unsplash.com/photo-1509114397022-ed747cca3f65?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')] bg-cover">
+  <div class="absolute top-0 w-full h-full backdrop-blur-lg"></div>
+  <div class="container mx-auto flex justify-center my-5">
+    <div class="relative flex flex-col justify-center items-center bg-white/[0.7] shadow-2xl border border-gray-400 p-10 w-[50%] rounded-lg">
+      <!-- Image -->
+      <div class="mt-2 text-5xl border-b-2 border-black w-full text-center">
+        <p class="mb-5">User Profile Setup</p>
+      </div>
+
+      <form action="" method="POST" class="w-full space-y-10 text-lg mt-" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+          {{u_form.username.label_tag}}
+          {% render_field u_form.username class="mb-3 mt-1 block w-full px-2 py-3 border border-gray-300 rounded-md text-xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:invalid:border-red-500 focus:invalid:ring-red-500" placeholder="Username" %}
+        </div>
+        <div>
+          {{u_form.email.label_tag}}
+          {% render_field u_form.email class="mb-3 mt-1 block w-full px-2 py-3 border border-gray-300 rounded-md text-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:invalid:border-red-500 focus:invalid:ring-red-500" placeholder="Email" %}
+        </div>
+        <div class="text-lg">
+          <p class="text-lg mb-3">
+            {{p_form.image.label_tag}}
+          </p>
+          {% render_field p_form.image class="file:bg-violet-500 file:transition ease-in-out file:hover:bg-violet-400 file:text-white file:border-none file:px-5 file:py-2 file:font-semibold file:rounded-lg" %}
+        </div>
+        <div>
+          <p>
+            {{p_form.bio.label_tag}}
+          </p>
+          {% render_field p_form.bio class="mb-3 mt-1 block w-full h-[10rem] px-2 py-3 border border-gray-300 rounded-md text-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:invalid:border-red-500 focus:invalid:ring-red-500" placeholder="Enter Bio" %}
+        </div>
+        <div class="text-xl">
+          <input type="submit" value="Submit" class="w-full px-4 py-1.5 rounded-md shadow-lg bg-gradient-to-r from-violet-600 to-red-600 font-medium text-gray-100" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endcomment %}
+
+
+{% endblock %}
+
+
+{% block script %}
+
+  <script>
+    const inpt = document.querySelector('input[name="email"]')
+    inpt.disabled = true;
+
+    const form = document.querySelector(".content-form");
+
+    form.addEventListener("submit", function (e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+      }
+
+      form.classList.add("was-validated");
+    });
+  </script>
+  
+{% endblock script %}
+  

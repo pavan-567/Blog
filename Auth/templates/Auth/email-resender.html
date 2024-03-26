@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+ {% block content %}
+<div class="container">
+    <div class="card">
+        <h5 class="card-header">Email Verification</h5>
+        <div class="card-body">
+          <!-- <h5 class="card-title">Email Verification</h5> -->
+          <p class="card-text">Below Is The Button Which Sends a Link To Your GMAIL! Kindly Check it and verify your Email!</p>
+          <a href="{% url 'verify-email' %}" class="btn btn-danger">Send Email</a>
+        </div>
+      </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+<div
+  class="w-full h-screen m-0 bg-[url({% static 'images/Posts/delete.jpeg' %})] bg-cover flex items-center justify-center relative"
+>
+  <div class="absolute h-full w-full backdrop-blur-md"></div>
+  <div
+    class="z-20 container h-auto bg-gray-200 mx-auto my-10 text-2xl p-10 border border-gray-500 rounded-lg"
+    style="box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px"
+  >
+    {% if user.is_authenticated %} {% if user.id == post.author.id %}
+    <form action="" method="post">
+      {% csrf_token %}
+      <h1 class="text-4xl">
+        Are You Sure You Want To Delete The Post -
+        <strong>{{post.title}}</strong> ?
+      </h1>
+      <div>
+        <input
+          type="submit"
+          value="Delete"
+          class="bg-violet-800 text-white p-5 rounded-lg mt-5 cursor-pointer hover:bg-violet-500 transition ease-in-out delay-75"
+        />
+        <a href="{% url 'detail-post' post.id %}" class="mx-3 bg-violet-800 text-white p-5 rounded-lg mt-5 cursor-pointer hover:bg-violet-500 transition ease-in-out delay-75">Go Back</a>
+      </div>
+    </form>
+    {% else %}
+    <div class="text-3xl text-center font-semibold">
+      You aren't Eligible To Access This Page
+    </div>
+    {% endif %} {% else %}
+    <div class="text-3xl text-center font-semibold">
+      You aren't Authenticated! Please Login Or Register
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

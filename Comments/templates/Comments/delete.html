@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+    <div class="relative min-h-screen flex justify-center items-start bg-[url({% static 'images/Comments/delete.jpg' %})] bg-no-repeat bg-cover bg-bottom">
+        <div class="absolute top-0 left-0 w-full h-full backdrop-blur-sm"></div>
+        <div class="bg-violet-50/[0.5] mt-[20rem] p-5 w-[40rem] z-10"
+                style="box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;">
+            <div class="grid items-center justify-center text-black gap-10">
+                <div class="border-b text-center w-full p-5">
+                    <p class="text-4xl">Delete Comment</p>
+                </div>
+                <div id="message">
+                    <p class="text-2xl">Are You Sure You Want To Delete The Comment?</p>
+                </div>
+                <div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="text-2xl flex justify-between items-center">
+
+                            <input type="submit" value="Delete" class="cursor-pointer bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400 transition ease-linear delay-75" />
+                            <a href="{% url 'detail-post' comment.post.id %}" class="bg-blue-500 p-3 rounded-lg text-white hover:bg-blue-400 transition ease-linear delay-75">Go Back</a>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+{% endblock %}

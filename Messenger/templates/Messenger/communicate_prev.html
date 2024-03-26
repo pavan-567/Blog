@@ -1,0 +1,180 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
+<div class="container">
+   <div class="card" style="width: auto; background: url('{{user.profile.chat_wallpaper.url}}'); background-size: cover; object-fit: cover; background-position: top center;">
+      <div class="card-body position-relative">
+ 
+ 
+ <!-- Modal For Options (Modal Attached To Options Button Which Is Down Below) -->
+ <div class="modal fade" id="chat-wallpaper" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h1 class="modal-title fs-5" id="staticBackdropLabel">Change Wallpaper</h1>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <form action="{% url 'chat-wallpaper' receiver.id %}" method="POST" enctype="multipart/form-data" id="chat-wallpaper-form" novalidate>
+         {% csrf_token %}
+         <div class="modal-body">
+             <label for="chat-img">Select Image</label>
+             <input type="file" name="chat-image" id="chat-img" class="form-control" required>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+         </div>
+      </form>
+     </div>
+   </div>
+ </div>
+    
+         <div class="d-flex text-black gap-3 position-sticky top-0 py-2 px-3" style="z-index: 4; background-color: gainsboro; border-radius: 10px; box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;">
+            <!-- Options Drop Down -->
+            <div class="dropdown" style="position: absolute; z-index: 10; right: 0; margin-right: 20px; margin-top: 10px;">
+               <button type="button" class="btn btn-secondary p-2 me-3 mt-2"  data-bs-toggle="dropdown">
+                  Options
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                     <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                   </svg>
+               </button>
+               <ul class="dropdown-menu">
+                  <li><a type="button" class="dropdown-item"  data-bs-toggle="modal" data-bs-target="clear-chat">Clear Chat</a></li>
+                  <li><a type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#chat-wallpaper">Change Chat Wallpaper</a></li>
+                  <li>
+                     <form action="{% url 'default-wallpaper' receiver.pk %}" method="post" id="default-wallpaper-form" novalidate>
+                        {% csrf_token %}
+                        <input type="submit" class="dropdown-item" value="Reset Chat Wallpaper" required />
+                     </form>
+                  </li>
+               </ul>
+            </div>
+            <!--  -->
+            <div class="position-relative" style="max-width: 50%;">
+               <img src="{{receiver.profile.image.url}}" height="70" width="70" class="rounded-circle object-fit-cover w-full" alt="IMG">
+               <div class="position-absolute online-container" style="bottom: 0; right: 0;">
+                  {% if receiver.profile.status %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color:greenyellow;" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                     <circle cx="8" cy="8" r="8"/>
+                  </svg>
+                  {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                     <circle cx="8" cy="8" r="8"/>
+                  </svg>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="d-flex flex flex-column justify-content-even">
+               <h4>
+                  {{receiver.username|capfirst}}
+               </h4>
+               <div class="profile-status">
+                  {% if receiver.profile.status %}
+                  Online   
+                  {% else %}
+                  
+                  {% comment %}   
+                     Last Seen {{receiver.profile.updated_at|date:'l'}} at {{receiver.profile.updated_at|date:"g:i a"}}
+                     <br>
+                  {% endcomment %}
+                     
+                  Last Seen {{status|capfirst}} at {{receiver.profile.updated_at|date:"g:i a"}}
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+         <!--  -->
+         <hr>
+         <div class="card-text" id="message-container" style="width: auto; max-height: 40rem; min-height: 40rem; overflow-y: scroll;">
+            {% for message in UserMessages %}
+            <div class="">
+               {% if message.user == receiver %}
+
+               {% comment %}
+               <div class="d-flex gap-2 receiver">
+                 <div class="position-relative mt-1">
+                     <img src="{{receiver.profile.image.url}}" height="50" width="50" class="rounded-circle object-fit-cover w-full" alt="IMG">
+                 </div>
+                 <div class="d-flex flex-column justify-content-between border p-2 px-3" style="border-radius: 10px;">
+                     <h4>
+                       {{receiver.username|capfirst}}
+                     </h4>
+                     <p class="mb-0">
+                       {{message.content}}
+                     </p>
+                 </div>
+               </div>
+               {% endcomment %}
+               <div class="d-flex receiver justify-content-start p-2 ms-2 align-items-center">
+                  <div class="d-flex bg-secondary p-2 text-white" style="border-radius: 10px;">
+                     <p class="px-2 py-3" style="min-width: 200px; border-radius: 10px;">{{message.content}}</p>
+                     <p class="align-self-end" style="font-size: 12px;">{{message.updated_at|date:"g:i a"}}</p>
+                  </div>
+               </div>
+               {% else %}
+                  {% comment %}   
+                     <div class="d-flex gap-2 sender">
+                     <div class="position-relative mt-1">
+                        <img src="{{user.profile.image.url}}" height="50" width="50" class="rounded-circle object-fit-cover w-full" alt="IMG">
+                     </div>
+                     <div class="d-flex flex flex-column justify-content-between border p-2 px-3" style="border-radius: 10px;">
+                        <h4>
+                           {{user.username|capfirst}}
+                        </h4>
+                        <p class="mb-0">
+                           {{message.content}}
+                        </p>
+                     </div>
+                     </div>
+                  {% endcomment %}
+               <div class="d-flex sender justify-content-end p-2 me-2 align-items-center">
+                  <div class="d-flex position-relative bg-warning p-2 text-black" style="border-radius: 10px;">
+                     <p class="px-2 py-3" style="min-width: 200px;">{{message.content}}</p>
+                     <p class="align-self-end" style="font-size: 12px;">{{message.updated_at|date:"g:i a"}}</p>
+                     <div class="position-absolute end-0 bottom-0">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                           <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                         </svg> -->
+                     </div>
+                  </div>
+               </div>
+               {% endif %}
+            </div>
+            {% endfor %}
+            
+            <hr class="endHr me-2">
+         </div>
+         <div class="position-relative mt-2 me-2">
+            <div id="form" class="bottom-0 start-0 w-100 py-2 px-3" style="background-color: gainsboro; box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px; padding: 5px; border-radius: 10px;">
+               <form action="" method="POST" class="d-flex align-items-center gap-3"  id="message-form" novalidate>
+                {% csrf_token %}
+                 <input
+                    type="text"
+                    name="content"
+                    class="form-control"
+                    placeholder="your message"
+                    id="chat-message-input"
+                    required
+                    />
+                 <button
+                    class="btn btn-outline-primary mb-0"
+                    id="chat-message-submit"
+                    >
+                 Submit
+                 </button>
+              </form>
+             </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %} 
+{% block script %} 
+{{room.slug|json_script:"json-room-name"}}
+{{request.user.username|json_script:'json-username'}}
+{{receiver.id|json_script:'json-id'}}
+{{receiver.username|json_script:'json-receiver-username'}}
+{{request.user.email|json_script:"json-email"}}
+<script src="{% static 'js/chat_app.js' %}"></script>
+<script src="{% static 'js/chat_form_validation.js' %}"></script>
+{% endblock script %}

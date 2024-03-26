@@ -1,0 +1,86 @@
+{% extends "base.html" %} 
+{% block content %} 
+{% load static %}
+<div class="mt-5 d-flex justify-content-center align-items-center">
+  <div class="card shadow" style="width: 22rem;">
+    <div class="card-body">
+      <h2 class="card-title text-center">Login</h2>
+      <div class="card-text">
+        <div class="container">
+          <form action="" class="content-form" method="POST" novalidate>
+            {% csrf_token %}
+            <div class="form-floating mt-3">
+              <input
+                type="email"
+                name="email"
+                class="form-control"
+                id="email"
+                placeholder="Place Email Here"
+                required
+              />
+              <label for="email" class="form-label">Email</label>
+              <div class="invalid-feedback">Invalid Email</div>
+              <div class="valid-feedback">Valid Email</div>
+            </div>
+            <div class="form-floating mt-3">
+              <input
+                type="password"
+                name="password"
+                class="form-control"
+                id="password"
+                placeholder="Place Password"
+                required
+              />
+              <label for="password" class="form-label">Password</label>
+            </div>
+            <div class="text-end my-3">
+              <a href="#" data-bs-toggle="modal" data-bs-target="#pass">Forgot Password?</a>
+            </div>
+            <button class="btn btn-outline-primary w-100">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="pass" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="password" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="pass">Change Password</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'forgot-pass' %}" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="d-flex flex-column">
+            <label for="" class="align-self-start">Enter Your Email</label>
+            <input type="email" name="email" id="" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %} {% block script %}
+<script>
+  const form = document.querySelector(".content-form");
+
+  form.addEventListener("submit", function (e) {
+    if (!form.checkValidity()) {
+      e.preventDefault();
+    }
+
+    form.classList.add("was-validated");
+  });
+</script>
+{% endblock script %}
